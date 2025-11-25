@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { FaDna, FaMicroscope, FaFlask, FaAtom, FaRocket, FaBrain, FaBars, FaTimes } from 'react-icons/fa';
+import { FaDna, FaMicroscope, FaFlask, FaAtom, FaRocket, FaBrain, FaBars, FaTimes, FaWordpress, FaMobileAlt, FaPaintBrush, FaHeadset, FaBuilding, FaFileAlt, FaBullseye, FaShoppingCart, FaMagic } from 'react-icons/fa';
 import { GiDna2, GiChemicalDrop } from 'react-icons/gi';
 import './App.css';
 
@@ -29,40 +29,58 @@ function App() {
 
   const services = [
     {
-      icon: <FaDna />,
-      title: 'Genetic Engineering',
-      description: 'Cutting-edge gene editing and CRISPR technologies for advanced therapeutic solutions.',
+      icon: <FaWordpress />,
+      title: 'WordPress Websites',
+      description: 'Beta Tech Consulting service to design and develop WordPress websites is a collaborative process that involves an initial consultation to understand the client\'s goals and preferences, website design, development, testing, and launch. The team uses WordPress to create a responsive, scalable, and optimized website that reflects the client\'s brand and incorporates features as needed. Beta Tech Consulting also provides ongoing maintenance and support services to ensure that the website remains up-to-date and secure.',
       color: '#00d4ff'
     },
     {
-      icon: <FaMicroscope />,
-      title: 'Research & Development',
-      description: 'State-of-the-art laboratory facilities for breakthrough betatechconsulting innovations.',
+      icon: <FaMobileAlt />,
+      title: 'Mobile-Responsive Websites',
+      description: 'Experts in designing and converting your key mobile audience. Our team of creatives will always consider the most optimal resolutions and device sizes for the design of your website interface. Mobile-first, tablet-responsive, and cross-browser tested is what you can expect from working with our expert web designers.',
       color: '#ff0080'
     },
     {
-      icon: <FaFlask />,
-      title: 'Molecular Biology',
-      description: 'Advanced molecular analysis and protein engineering for medical breakthroughs.',
+      icon: <FaPaintBrush />,
+      title: 'Custom Design',
+      description: 'Tired of boring old themes applied for your company website? Our team will never start your project from any theme or previous website design. All designs crafted by Beta Tech Consulting are custom and unique. Stand apart from your competition with a custom bespoke website designed to tell your unique story.',
       color: '#00ff88'
     },
     {
-      icon: <FaAtom />,
-      title: 'Nanotechnology',
-      description: 'Precision nanoscale engineering for targeted drug delivery systems.',
+      icon: <FaHeadset />,
+      title: 'Website Support',
+      description: 'Beta Tech Consulting offers website support and maintenance services, including updates and backups, security measures, hosting on our servers, and technical support. These services are designed to keep client websites up-to-date, secure, and running smoothly, while freeing clients from the hassle of managing their website themselves.',
       color: '#ffd700'
     },
     {
-      icon: <FaBrain />,
-      title: 'Bioinformatics',
-      description: 'AI-powered data analysis for genomic research and personalized medicine.',
+      icon: <FaBuilding />,
+      title: 'Corporate Websites',
+      description: 'Beta Tech Consulting service to design and develop corporate websites involves an initial consultation to understand the client\'s business goals and website requirements, website design that incorporates the client\'s brand elements and focuses on user experience, website development using WordPress and incorporation of necessary features, and content creation. The end result is a custom website that reflects the client\'s brand and meets their specific corporate needs.',
       color: '#ff6b6b'
     },
     {
-      icon: <GiChemicalDrop />,
-      title: 'Biochemistry',
-      description: 'Innovative chemical processes for sustainable betatechconsulting solutions.',
+      icon: <FaFileAlt />,
+      title: 'Brochure Websites',
+      description: 'Our brochure websites are classy, eye-catching, and speak to your customers. We design and develop responsive websites to feature your products and services in sync with the latest design trends, your brand, and your target audience.',
       color: '#a78bfa'
+    },
+    {
+      icon: <FaBullseye />,
+      title: 'Landing Pages',
+      description: 'We craft stunning effective landing pages that have one goal in mind – bringing your CTA (Call to Action) to your customer. Conversion, testing, improvement. We learn and adapt to minimize distractions as we smoothly convert your viewers into your paying customers.',
+      color: '#4ade80'
+    },
+    {
+      icon: <FaShoppingCart />,
+      title: 'E-commerce Websites',
+      description: 'With the growth of online shopping, e-commerce websites are in high demand. Businesses selling products or services can create a website to showcase their offerings and allow customers to purchase online.',
+      color: '#f59e0b'
+    },
+    {
+      icon: <FaMagic />,
+      title: 'Animated Website',
+      description: 'Experience the power of a dynamic online presence with Beta Tech Consulting Animated Websites. Our team of skilled designers and developers can help bring your website to life with stunning graphics and seamless animations that captivate your audience. By creating an engaging user experience, you can boost your brand\'s online presence, increase conversions, and stay ahead of the competition.',
+      color: '#ec4899'
     }
   ];
 

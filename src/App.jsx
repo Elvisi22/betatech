@@ -296,6 +296,102 @@ function App() {
         </motion.div>
       </section>
 
+      {/* Contact Section */}
+      <section className="contact" id="contact">
+        <motion.div
+          className="contact-container"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Create Your New <span className="gradient-text">Project</span> with Beta Tech Consulting
+          </motion.h2>
+
+          <motion.form
+            className="contact-form"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="form-row">
+              <motion.div
+                className="form-group"
+                whileFocus={{ scale: 1.02 }}
+              >
+                <input
+                  type="text"
+                  placeholder="Your name*"
+                  required
+                />
+              </motion.div>
+
+              <motion.div
+                className="form-group"
+                whileFocus={{ scale: 1.02 }}
+              >
+                <input
+                  type="email"
+                  placeholder="Your e-mail*"
+                  required
+                />
+              </motion.div>
+            </div>
+
+            <div className="form-group">
+              <textarea
+                placeholder="Tell us about your project…"
+                rows="5"
+                required
+              ></textarea>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">I'm interested in...</label>
+              <div className="checkbox-grid">
+                {[
+                  'Branding',
+                  'Web Design',
+                  'Packaging',
+                  'Graphic Design',
+                  'UI/UX',
+                  'Video Production',
+                  'Experiential',
+                  'Brand Assets',
+                  'Decks'
+                ].map((service, index) => (
+                  <motion.label
+                    key={index}
+                    className="checkbox-label"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <input type="checkbox" value={service} />
+                    <span className="checkbox-text">{service}</span>
+                  </motion.label>
+                ))}
+              </div>
+            </div>
+
+            <motion.button
+              type="submit"
+              className="submit-button"
+              whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(0, 212, 255, 0.6)' }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Send Message
+            </motion.button>
+          </motion.form>
+        </motion.div>
+      </section>
+
       {/* Footer */}
       <footer className="footer">
         <motion.div
@@ -329,7 +425,7 @@ function App() {
         </motion.div>
         
         <div className="footer-bottom">
-          <p>&copy; 2024 Beta Tech Consulting. All rights reserved.</p>
+          <p>&copy; 2025 Beta Tech Consulting. All rights reserved.</p>
         </div>
       </footer>
     </div>

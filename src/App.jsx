@@ -98,8 +98,7 @@ function App() {
             className="nav-logo"
             whileHover={{ scale: 1.05 }}
           >
-            <GiDna2 className="nav-logo-icon" />
-            <span>Beta <span className="gradient-text">Tech Consulting</span></span>
+            <img src="/betatechlogo-removebg-preview.png" alt="Beta Tech Consulting" className="nav-logo-image" />
           </motion.div>
 
           <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
@@ -171,10 +170,10 @@ function App() {
         >
           <motion.div
             className="logo-container"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.3 }}
           >
-            <GiDna2 className="logo-icon" />
+            <img src="/betatechlogo-removebg-preview.png" alt="Beta Tech Consulting" className="hero-logo-image" />
           </motion.div>
           
           <motion.h1

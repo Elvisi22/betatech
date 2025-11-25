@@ -173,7 +173,7 @@ function App() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
-            Pioneering the Future of Technology Consulting
+            Accelerating your grouth
           </motion.p>
 
           <motion.div

@@ -200,7 +200,7 @@ function App() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.9, duration: 0.8 }}
           >
-            <p>Transforming science into solutions through innovation, research, and cutting-edge technology.</p>
+    
           </motion.div>
 
           <motion.button
@@ -421,7 +421,7 @@ function App() {
         >
           <div className="footer-section">
             <h3>Beta Tech Consulting</h3>
-            <p>Innovating for a better tomorrow through advanced technology consulting solutions.</p>
+            <p>Accelerating your grouth.</p>
           </div>
           
           <div className="footer-section">

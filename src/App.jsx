@@ -103,17 +103,21 @@ function App() {
 
           <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
             <a href="#home" onClick={() => setIsMenuOpen(false)}>Home</a>
+            <a href="#about" onClick={() => setIsMenuOpen(false)}>About Us</a>
             <a href="#services" onClick={() => setIsMenuOpen(false)}>Services</a>
-            <a href="#about" onClick={() => setIsMenuOpen(false)}>About</a>
-            <a href="#research" onClick={() => setIsMenuOpen(false)}>Research</a>
+            <a href="#industries" onClick={() => setIsMenuOpen(false)}>Industries</a>
+            <a href="#insights" onClick={() => setIsMenuOpen(false)}>Insights</a>
             <a href="#careers" onClick={() => setIsMenuOpen(false)}>Careers</a>
-            <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
             <motion.button 
               className="nav-cta"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setIsMenuOpen(false);
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
-              Get Started
+              Get In Touch
             </motion.button>
           </div>
 
@@ -168,29 +172,21 @@ function App() {
           transition={{ duration: 1 }}
           className="hero-content"
         >
-          <motion.div
-            className="logo-container"
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <img src="/betatechlogo-removebg-preview.png" alt="Beta Tech Consulting" className="hero-logo-image" />
-          </motion.div>
-          
-          <motion.h1
+          <motion.blockquote
+            className="hero-quote"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            Beta <span className="gradient-text">Tech Consulting</span>
-          </motion.h1>
+            Best custom websites that drive business growth.
+          </motion.blockquote>
           
           <motion.p
-            className="tagline"
+            className="quote-author"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
-            Accelerating your grouth
           </motion.p>
 
           <motion.div

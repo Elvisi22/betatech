@@ -329,11 +329,19 @@ function App() {
 
           <motion.form
             className="contact-form"
+            name="contact"
+            method="POST"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
+            action="/success"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
             viewport={{ once: true }}
           >
+            <input type="hidden" name="form-name" value="contact" />
+            <input type="hidden" name="bot-field" />
+            
             <div className="form-row">
               <motion.div
                 className="form-group"
@@ -341,6 +349,7 @@ function App() {
               >
                 <input
                   type="text"
+                  name="name"
                   placeholder="Your name*"
                   required
                 />
@@ -352,6 +361,7 @@ function App() {
               >
                 <input
                   type="email"
+                  name="email"
                   placeholder="Your e-mail*"
                   required
                 />
@@ -360,6 +370,7 @@ function App() {
 
             <div className="form-group">
               <textarea
+                name="message"
                 placeholder="Tell us about your project…"
                 rows="5"
                 required
@@ -387,7 +398,7 @@ function App() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <input type="checkbox" value={service} />
+                    <input type="checkbox" name="services[]" value={service} />
                     <span className="checkbox-text">{service}</span>
                   </motion.label>
                 ))}

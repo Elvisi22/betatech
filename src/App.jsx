@@ -98,7 +98,7 @@ function App() {
             className="nav-logo"
             whileHover={{ scale: 1.05 }}
           >
-            <img src="/betatechlogo-removebg-preview.png" alt="Beta Tech Consulting" className="nav-logo-image" />
+            <img src="/btconsulting.jpg" alt="Beta Tech Consulting" className="nav-logo-image" />
           </motion.div>
 
           <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
@@ -378,7 +378,8 @@ function App() {
                   'Video Production',
                   'Experiential',
                   'Brand Assets',
-                  'Decks'
+                  'Decks',
+                  'Other'
                 ].map((service, index) => (
                   <motion.label
                     key={index}
@@ -416,24 +417,50 @@ function App() {
         >
           <div className="footer-section">
             <h3>Beta Tech Consulting</h3>
-            <p>Accelerating your grouth.</p>
+            <p>Accelerating your growth through innovative technology solutions.</p>
+            <p style={{ marginTop: '1rem', fontSize: '0.95rem' }}>
+              
+            </p>
           </div>
           
           <div className="footer-section">
             <h4>Quick Links</h4>
             <ul>
+              <li><a href="#home">Home</a></li>
               <li><a href="#about">About Us</a></li>
               <li><a href="#services">Services</a></li>
-              <li><a href="#research">Research</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li><a href="#industries">Industries</a></li>
+              <li><a href="#insights">Insights</a></li>
             </ul>
           </div>
           
           <div className="footer-section">
-            <h4>Contact</h4>
-            <p>Email: info@betatechconsulting.com</p>
-            <p>Phone: +1 (555) 123-4567</p>
-            <p>Location: Innovation District</p>
+            <h4>Services</h4>
+            <ul>
+              <li><a href="#services">Web Design</a></li>
+              <li><a href="#services">Mobile Development</a></li>
+              <li><a href="#services">UI/UX Design</a></li>
+              <li><a href="#services">Brand Strategy</a></li>
+              <li><a href="#services">Consulting</a></li>
+            </ul>
+          </div>
+
+          <div className="footer-section">
+            <h4>Get In Touch</h4>
+            <p>Ready to start your project?</p>
+            <a href="#contact" style={{ 
+              display: 'inline-block', 
+              marginTop: '1rem',
+              padding: '0.8rem 1.5rem',
+              background: 'linear-gradient(135deg, #1e90ff, #4169e1)',
+              color: '#fff',
+              borderRadius: '25px',
+              textDecoration: 'none',
+              fontWeight: '600',
+              transition: 'transform 0.3s ease'
+            }}>
+              Contact Us
+            </a>
           </div>
         </motion.div>
         

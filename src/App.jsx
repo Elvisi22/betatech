@@ -9,6 +9,7 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
@@ -502,7 +503,21 @@ function App() {
             method="POST"
             data-netlify="true"
             data-netlify-honeypot="bot-field"
-            action="/success"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target);
+              fetch('/', {
+                method: 'POST',
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString()
+              })
+              .then(() => {
+                setFormSubmitted(true);
+                e.target.reset();
+                setTimeout(() => setFormSubmitted(false), 5000);
+              })
+              .catch((error) => console.error('Form submission error:', error));
+            }}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
@@ -582,6 +597,27 @@ function App() {
             >
               Send Message
             </motion.button>
+
+            {formSubmitted && (
+              <motion.div
+                className="success-message"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                style={{
+                  marginTop: '1.5rem',
+                  padding: '1rem 1.5rem',
+                  background: 'linear-gradient(135deg, #4A90E2, #5B9BD5)',
+                  borderRadius: '10px',
+                  color: 'white',
+                  textAlign: 'center',
+                  fontSize: '1.1rem',
+                  fontWeight: '500'
+                }}
+              >
+                ✓ Thank you! Your message has been sent successfully.
+              </motion.div>
+            )}
           </motion.form>
         </motion.div>
       </section>

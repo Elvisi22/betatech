@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { FaDna, FaMicroscope, FaFlask, FaAtom, FaRocket, FaBrain, FaBars, FaTimes, FaWordpress, FaMobileAlt, FaPaintBrush, FaHeadset, FaBuilding, FaFileAlt, FaBullseye, FaShoppingCart, FaMagic } from 'react-icons/fa';
+import { FaDna, FaMicroscope, FaFlask, FaAtom, FaRocket, FaBrain, FaBars, FaTimes, FaWordpress, FaMobileAlt, FaPaintBrush, FaHeadset, FaBuilding, FaFileAlt, FaBullseye, FaShoppingCart, FaMagic, FaSearch } from 'react-icons/fa';
 import { GiDna2, GiChemicalDrop } from 'react-icons/gi';
 import './App.css';
 
@@ -8,6 +8,7 @@ function App() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
@@ -84,6 +85,12 @@ function App() {
     }
   ];
 
+  // Filter services based on search query
+  const filteredServices = services.filter(service =>
+    service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    service.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="app">
       {/* Navigation Menu */}
@@ -102,12 +109,36 @@ function App() {
           </motion.div>
 
           <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-            <a href="#home" onClick={() => setIsMenuOpen(false)}>Home</a>
+            <a href="#home" onClick={(e) => {
+              e.preventDefault();
+              setIsMenuOpen(false);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}>Home</a>
             <a href="#about" onClick={() => setIsMenuOpen(false)}>About Us</a>
             <a href="#services" onClick={() => setIsMenuOpen(false)}>Services</a>
             <a href="#industries" onClick={() => setIsMenuOpen(false)}>Industries</a>
             <a href="#insights" onClick={() => setIsMenuOpen(false)}>Insights</a>
             <a href="#careers" onClick={() => setIsMenuOpen(false)}>Careers</a>
+          </div>
+
+          <div className="nav-actions">
+            <div className="search-container">
+              <FaSearch className="search-icon" />
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                className="search-input"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (e.target.value) {
+                    setTimeout(() => {
+                      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                  }
+                }}
+              />
+            </div>
             <motion.button 
               className="nav-cta"
               whileHover={{ scale: 1.05 }}
@@ -232,7 +263,28 @@ function App() {
       </motion.section>
 
       {/* Services Section */}
-      <section className="services">
+      <section className="services" id="services">
+        {searchQuery && (
+          <motion.div 
+            style={{ 
+              textAlign: 'center', 
+              marginBottom: '2rem', 
+              padding: '1rem 2rem',
+              background: 'rgba(74, 144, 226, 0.1)',
+              borderRadius: '10px',
+              maxWidth: '600px',
+              margin: '0 auto 3rem'
+            }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <p style={{ color: '#4A90E2', fontWeight: '600', fontSize: '1.1rem', margin: 0 }}>
+              {filteredServices.length} result{filteredServices.length !== 1 ? 's' : ''} found for "{searchQuery}"
+            </p>
+          </motion.div>
+        )}
+
         <motion.h2
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -243,39 +295,156 @@ function App() {
         </motion.h2>
 
         <div className="services-grid">
-          {services.map((service, index) => (
-            <motion.div
-              key={index}
-              className="service-card"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              viewport={{ once: true }}
-              whileHover={{ 
-                y: -10,
-                boxShadow: `0 20px 60px ${service.color}40`
-              }}
-            >
+          {filteredServices.length > 0 ? (
+            filteredServices.map((service, index) => (
               <motion.div
-                className="service-icon"
-                style={{ color: service.color }}
+                key={index}
+                className="service-card"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
                 whileHover={{ 
-                  rotate: 360,
-                  scale: 1.2
+                  y: -10,
+                  boxShadow: `0 20px 60px ${service.color}40`
                 }}
-                transition={{ duration: 0.6 }}
               >
-                {service.icon}
+                <motion.div
+                  className="service-icon"
+                  style={{ color: service.color }}
+                  whileHover={{ 
+                    rotate: 360,
+                    scale: 1.2
+                  }}
+                  transition={{ duration: 0.6 }}
+                >
+                  {service.icon}
+                </motion.div>
+                <h3>{service.title}</h3>
+                <p>{service.description}</p>
+                <motion.div
+                  className="card-glow"
+                  style={{ background: `radial-gradient(circle, ${service.color}20 0%, transparent 70%)` }}
+                />
               </motion.div>
-              <h3>{service.title}</h3>
-              <p>{service.description}</p>
-              <motion.div
-                className="card-glow"
-                style={{ background: `radial-gradient(circle, ${service.color}20 0%, transparent 70%)` }}
-              />
-            </motion.div>
-          ))}
+            ))
+          ) : (
+            <p style={{ gridColumn: '1 / -1', textAlign: 'center', fontSize: '1.2rem', color: '#5a6c7d', padding: '3rem' }}>
+              No services found matching "{searchQuery}". Try different keywords.
+            </p>
+          )}
         </div>
+      </section>
+
+      {/* About Us Section */}
+      <section className="about-section" id="about">
+        <motion.div
+          className="section-container"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <h2>About <span className="gradient-text">Beta Tech Consulting</span></h2>
+          <div className="about-content">
+            <div className="about-text">
+              <p>
+                Beta Tech Consulting is a leading technology solutions provider dedicated to helping businesses 
+                achieve their digital transformation goals. With years of experience and a team of expert developers, 
+                designers, and consultants, we deliver innovative web solutions that drive growth and success.
+              </p>
+              <p>
+                Our mission is to empower businesses with cutting-edge technology, creative design, and strategic 
+                insights. We believe in building long-term partnerships with our clients, understanding their unique 
+                needs, and delivering solutions that exceed expectations.
+              </p>
+              <p>
+                From startups to enterprise organizations, we've helped hundreds of companies establish their online 
+                presence, optimize their digital workflows, and achieve measurable results. Our commitment to quality, 
+                innovation, and customer satisfaction sets us apart in the industry.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Industries Section */}
+      <section className="industries-section" id="industries">
+        <motion.div
+          className="section-container"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <h2>Industries We <span className="gradient-text">Serve</span></h2>
+          <div className="industries-grid">
+            {[
+              { name: 'Healthcare', description: 'HIPAA-compliant solutions for medical practices, hospitals, and health tech startups.' },
+              { name: 'E-commerce', description: 'Scalable online stores with seamless payment integration and inventory management.' },
+              { name: 'Finance', description: 'Secure financial platforms, banking solutions, and fintech applications.' },
+              { name: 'Education', description: 'Learning management systems, educational platforms, and e-learning solutions.' },
+              { name: 'Real Estate', description: 'Property listing websites, CRM systems, and virtual tour solutions.' },
+              { name: 'Manufacturing', description: 'Supply chain management, inventory tracking, and B2B portals.' },
+              { name: 'Hospitality', description: 'Booking systems, reservation platforms, and guest management solutions.' },
+              { name: 'Technology', description: 'SaaS platforms, software products, and technology consulting services.' }
+            ].map((industry, index) => (
+              <motion.div
+                key={index}
+                className="industry-card"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <h3>{industry.name}</h3>
+                <p>{industry.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Insights Section */}
+      <section className="insights-section" id="insights">
+        <motion.div
+          className="section-container"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <h2>Latest <span className="gradient-text">Insights</span></h2>
+          <div className="insights-grid">
+            {/* Insights content will be added here */}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Careers Section */}
+      <section className="careers-section" id="careers">
+        <motion.div
+          className="section-container"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <h2>Join Our <span className="gradient-text">Team</span></h2>
+          <div className="careers-content">
+            <div className="careers-intro">
+              <p>
+                At Beta Tech Consulting, we're always looking for talented individuals who are passionate about 
+                technology and innovation. We offer a dynamic work environment, competitive compensation, and 
+                opportunities for growth and development.
+              </p>
+            </div>
+            <div className="positions-grid">
+              {/* Job positions will be added here */}
+            </div>
+          </div>
+        </motion.div>
       </section>
 
       {/* Stats Section */}

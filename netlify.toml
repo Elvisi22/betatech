@@ -6,10 +6,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-# Form notifications
-[[plugins]]
-  package = "@netlify/plugin-form-submissions"
-
-[plugins.inputs.to]
-  email = "eriselda@betatechal.com"

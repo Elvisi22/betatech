@@ -10,22 +10,73 @@ function App() {
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [animationsReady, setAnimationsReady] = useState(false);
 
   useEffect(() => {
+    let rafId = null;
+    let lastMouse = { x: 0, y: 0 };
     const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      lastMouse = { x: e.clientX, y: e.clientY };
+      if (rafId === null) {
+        rafId = requestAnimationFrame(() => {
+          setMousePosition(lastMouse);
+          rafId = null;
+        });
+      }
     };
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      const sections = [
+        { id: 'home', offset: 0 },
+        { id: 'about' },
+        { id: 'services' },
+        { id: 'industries' },
+        { id: 'insights' },
+        { id: 'careers' },
+        { id: 'contact' }
+      ];
+      const scrollPos = window.scrollY + 120;
+      let current = 'home';
+      sections.forEach((section) => {
+        if (!section.offset) {
+          const el = section.id === 'home' ? document.body : document.getElementById(section.id);
+          if (el) {
+            const top = section.id === 'home' ? 0 : el.offsetTop;
+            const height = section.id === 'home' ? 0 : el.offsetHeight;
+            if (scrollPos >= top && scrollPos < top + height) {
+              current = section.id;
+            }
+          }
+        }
+      });
+      setActiveSection(current);
     };
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('scroll', handleScroll);
+    const checkMobile = () => setIsMobile(window.innerWidth < 480);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    // Defer heavy animations until after initial load/paint
+    const onLoad = () => {
+      // small delay to allow layout/paint to settle
+      setTimeout(() => setAnimationsReady(true), 100);
+    };
+    if (document.readyState === 'complete') {
+      onLoad();
+    } else {
+      window.addEventListener('load', onLoad);
+    }
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('load', onLoad);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -114,15 +165,15 @@ function App() {
               e.preventDefault();
               setIsMenuOpen(false);
               window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}>Home</a>
-            <a href="#about" onClick={() => setIsMenuOpen(false)}>About Us</a>
-            <a href="#services" onClick={() => setIsMenuOpen(false)}>Services</a>
-            <a href="#industries" onClick={() => setIsMenuOpen(false)}>Industries</a>
-            <a href="#insights" onClick={() => setIsMenuOpen(false)}>Insights</a>
-            <a href="#careers" onClick={() => setIsMenuOpen(false)}>Careers</a>
+            }} className={activeSection === 'home' ? 'active' : ''}>Home</a>
+            <a href="#about" onClick={() => setIsMenuOpen(false)} className={activeSection === 'about' ? 'active' : ''}>About Us</a>
+            <a href="#services" onClick={() => setIsMenuOpen(false)} className={activeSection === 'services' ? 'active' : ''}>Services</a>
+            <a href="#industries" onClick={() => setIsMenuOpen(false)} className={activeSection === 'industries' ? 'active' : ''}>Industries</a>
+            <a href="#insights" onClick={() => setIsMenuOpen(false)} className={activeSection === 'insights' ? 'active' : ''}>Insights</a>
+            <a href="#careers" onClick={() => setIsMenuOpen(false)} className={activeSection === 'careers' ? 'active' : ''}>Careers</a>
           </div>
 
-          <div className="nav-actions">
+          <div className={`nav-actions ${isMenuOpen ? 'active' : ''}`}>
             <div className="search-container">
               <FaSearch className="search-icon" />
               <input 
@@ -169,33 +220,12 @@ function App() {
         }}
       />
 
-      {/* Floating Particles */}
-      <div className="particles">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="particle"
-            animate={{
-              y: [0, -100, 0],
-              x: [0, Math.random() * 100 - 50, 0],
-              opacity: [0, 1, 0]
-            }}
-            transition={{
-              duration: Math.random() * 5 + 5,
-              repeat: Infinity,
-              delay: Math.random() * 2
-            }}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`
-            }}
-          />
-        ))}
-      </div>
+      {/* Floating Particles removed for a cleaner, static background */}
 
       {/* Hero Section */}
       <motion.section 
         className="hero"
+        id="home"
         style={{ y, opacity }}
       >
         <motion.div
@@ -210,7 +240,7 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            Best custom websites that drive business growth.
+            Best custom websites that <span style={{fontWeight: '900'}}>drive business growth</span>.
           </motion.blockquote>
           
           <motion.p
@@ -233,109 +263,69 @@ function App() {
           <motion.button
             className="cta-button"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
-            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(0, 212, 255, 0.6)' }}
+            animate={{ 
+              opacity: 1, 
+              y: [0, -8, 0]
+            }}
+            transition={{ 
+              opacity: { delay: 1.2, duration: 0.6 },
+              y: { delay: 1.8, duration: 2.5, repeat: Infinity, ease: "easeInOut" }
+            }}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(74, 144, 226, 0.6)' }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
           >
             <FaRocket className="button-icon" />
             Explore Our Solutions
           </motion.button>
         </motion.div>
 
-        {/* Animated DNA Helix */}
-        <div className="dna-helix">
-          {[...Array(10)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="dna-strand"
-              animate={{
-                rotate: 360,
-                y: [0, 20, 0]
-              }}
-              transition={{
-                rotate: { duration: 10, repeat: Infinity, ease: "linear" },
-                y: { duration: 2, repeat: Infinity, delay: i * 0.2 }
-              }}
-              style={{ top: `${i * 10}%` }}
-            />
-          ))}
-        </div>
-      </motion.section>
-
-      {/* Services Section */}
-      <section className="services" id="services">
-        {searchQuery && (
-          <motion.div 
-            style={{ 
-              textAlign: 'center', 
-              marginBottom: '2rem', 
-              padding: '1rem 2rem',
-              background: 'rgba(74, 144, 226, 0.1)',
-              borderRadius: '10px',
-              maxWidth: '600px',
-              margin: '0 auto 3rem'
-            }}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <p style={{ color: '#4A90E2', fontWeight: '600', fontSize: '1.1rem', margin: 0 }}>
-              {filteredServices.length} result{filteredServices.length !== 1 ? 's' : ''} found for "{searchQuery}"
-            </p>
-          </motion.div>
-        )}
-
-        <motion.h2
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          Our <span className="gradient-text">Expertise</span>
-        </motion.h2>
-
-        <div className="services-grid">
-          {filteredServices.length > 0 ? (
-            filteredServices.map((service, index) => (
+        {/* Floating Tech Shapes */}
+        {animationsReady && (
+          <div className="tech-shapes">
+            {[
+              { shape: 'square', size: 40, color: '#4A90E2', left: 10, top: 20 },
+              { shape: 'circle', size: 30, color: '#5B9BD5', left: 25, top: 15 },
+              { shape: 'triangle', size: 35, color: '#7CB8E8', left: 45, top: 25 },
+              { shape: 'square', size: 25, color: '#4A90E2', left: 65, top: 18 },
+              { shape: 'circle', size: 45, color: '#5B9BD5', left: 80, top: 22 },
+              { shape: 'triangle', size: 28, color: '#4A90E2', left: 15, top: 60 },
+              { shape: 'square', size: 35, color: '#7CB8E8', left: 35, top: 65 },
+              { shape: 'circle', size: 32, color: '#5B9BD5', left: 55, top: 70 },
+              { shape: 'triangle', size: 38, color: '#4A90E2', left: 75, top: 58 },
+              { shape: 'square', size: 30, color: '#5B9BD5', left: 90, top: 65 },
+              { shape: 'circle', size: 26, color: '#7CB8E8', left: 20, top: 85 },
+              { shape: 'triangle', size: 32, color: '#4A90E2', left: 50, top: 88 },
+              { shape: 'square', size: 28, color: '#5B9BD5', left: 70, top: 90 },
+            ].map((item, i) => (
               <motion.div
-                key={index}
-                className="service-card"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                viewport={{ once: true }}
-                whileHover={{ 
-                  y: -10,
-                  boxShadow: `0 20px 60px ${service.color}40`
+                key={i}
+                className={`tech-shape tech-shape-${item.shape}`}
+                style={{
+                  width: item.size,
+                  height: item.size,
+                  borderColor: item.color,
+                  left: `${item.left}%`,
+                  top: `${item.top}%`,
                 }}
-              >
-                <motion.div
-                  className="service-icon"
-                  style={{ color: service.color }}
-                  whileHover={{ 
-                    rotate: 360,
-                    scale: 1.2
-                  }}
-                  transition={{ duration: 0.6 }}
-                >
-                  {service.icon}
-                </motion.div>
-                <h3>{service.title}</h3>
-                <p>{service.description}</p>
-                <motion.div
-                  className="card-glow"
-                  style={{ background: `radial-gradient(circle, ${service.color}20 0%, transparent 70%)` }}
-                />
-              </motion.div>
-            ))
-          ) : (
-            <p style={{ gridColumn: '1 / -1', textAlign: 'center', fontSize: '1.2rem', color: '#5a6c7d', padding: '3rem' }}>
-              No services found matching "{searchQuery}". Try different keywords.
-            </p>
-          )}
-        </div>
-      </section>
+                animate={{
+                  y: [0, -30, 0],
+                  rotate: item.shape === 'square' ? [0, 90, 0] : [0, 180, 0],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 6 + i * 0.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.3,
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </motion.section>
 
       {/* About Us Section */}
       <section className="about-section" id="about">
@@ -369,14 +359,82 @@ function App() {
         </motion.div>
       </section>
 
+      {/* Services Section */}
+      <section className="services" id="services">
+        {searchQuery && (
+          <motion.div 
+            style={{ 
+              textAlign: 'center', 
+              marginBottom: '2rem', 
+              padding: '1rem 2rem',
+              background: 'rgba(74, 144, 226, 0.1)',
+              borderRadius: '10px',
+              maxWidth: '600px',
+              margin: '0 auto 3rem'
+            }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <p style={{ color: '#4A90E2', fontWeight: '600', fontSize: '1.1rem', margin: 0 }}>
+              {filteredServices.length} result{filteredServices.length !== 1 ? 's' : ''} found for "{searchQuery}"
+            </p>
+          </motion.div>
+        )}
+
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          animate={animationsReady ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+          Our <span className="gradient-text">Expertise</span>
+        </motion.h2>
+
+        <div className="services-grid">
+          {filteredServices.length > 0 ? (
+            filteredServices.map((service, index) => (
+              <motion.div
+                key={index}
+                className="service-card"
+                initial={{ opacity: 0, y: 30 }}
+                animate={animationsReady ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: index * 0.06, duration: 0.4, ease: 'easeOut' }}
+                whileHover={{ 
+                  y: -10,
+                  boxShadow: `0 20px 60px ${service.color}40`
+                }}
+              >
+                <motion.div
+                  className="service-icon"
+                  style={{ color: service.color }}
+                  whileHover={{ scale: 1.08 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  {service.icon}
+                </motion.div>
+                <h3>{service.title}</h3>
+                <p>{service.description}</p>
+                <motion.div
+                  className="card-glow"
+                  style={{ background: `radial-gradient(circle, ${service.color}20 0%, transparent 70%)` }}
+                />
+              </motion.div>
+            ))
+          ) : (
+            <p style={{ gridColumn: '1 / -1', textAlign: 'center', fontSize: '1.2rem', color: '#5a6c7d', padding: '3rem' }}>
+              No services found matching "{searchQuery}". Try different keywords.
+            </p>
+          )}
+        </div>
+      </section>
+
       {/* Industries Section */}
       <section className="industries-section" id="industries">
         <motion.div
           className="section-container"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={animationsReady ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
         >
           <h2>Industries We <span className="gradient-text">Serve</span></h2>
           <div className="industries-grid">
@@ -393,10 +451,9 @@ function App() {
               <motion.div
                 key={index}
                 className="industry-card"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                viewport={{ once: true }}
+                initial={{ opacity: 0, y: 24 }}
+                animate={animationsReady ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: index * 0.05, duration: 0.45, ease: 'easeOut' }}
                 whileHover={{ y: -5 }}
               >
                 <h3>{industry.name}</h3>
@@ -452,9 +509,9 @@ function App() {
       <section className="stats">
         <motion.div
           className="stats-container"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
           viewport={{ once: true }}
         >
           {[
@@ -466,11 +523,11 @@ function App() {
             <motion.div
               key={index}
               className="stat-item"
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05, duration: 0.45, ease: 'easeOut' }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.1 }}
+                whileHover={{ y: -6 }}
             >
               <h3 className="stat-number">{stat.number}</h3>
               <p className="stat-label">{stat.label}</p>
@@ -531,10 +588,12 @@ function App() {
                 className="form-group"
                 whileFocus={{ scale: 1.02 }}
               >
+                <label className="form-label" htmlFor="name">Full name</label>
                 <input
                   type="text"
+                  id="name"
                   name="name"
-                  placeholder="Your name*"
+                  placeholder="e.g. Alex Johnson"
                   required
                 />
               </motion.div>
@@ -543,19 +602,23 @@ function App() {
                 className="form-group"
                 whileFocus={{ scale: 1.02 }}
               >
+                <label className="form-label" htmlFor="email">Work email</label>
                 <input
                   type="email"
+                  id="email"
                   name="email"
-                  placeholder="Your e-mail*"
+                  placeholder="name@company.com"
                   required
                 />
               </motion.div>
             </div>
 
             <div className="form-group">
+              <label className="form-label" htmlFor="message">Project details</label>
               <textarea
+                id="message"
                 name="message"
-                placeholder="Tell us about your project…"
+                placeholder="Tell us about your goals, timeline, and budget range."
                 rows="5"
                 required
               ></textarea>
@@ -603,7 +666,6 @@ function App() {
                 className="success-message"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
                 style={{
                   marginTop: '1.5rem',
                   padding: '1rem 1.5rem',
@@ -615,7 +677,7 @@ function App() {
                   fontWeight: '500'
                 }}
               >
-                ✓ Thank you! Your message has been sent successfully.
+                ✓ Thank you! Your message has been sent. We'll get back to you within one business day.
               </motion.div>
             )}
           </motion.form>
